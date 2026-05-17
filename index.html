@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEGA QUANT v3 | Live Dashboard</title>
+<style>
+:root{--bg:#03030a;--bg2:#08081a;--bg3:#0d0d22;--card:#101028;--border:#1a1a38;
+--text:#d8dbff;--muted:#454578;--bull:#00e87a;--bear:#ff2244;--acc:#6c47ff;
+--gold:#ffc842;--warn:#ff8c00;--info:#00bfff;--mono:'Courier New',monospace;}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;overflow-x:hidden}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:50px;
+  background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300;gap:10px}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.logo-box{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--acc),var(--bull));
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#fff}
+.logo-name{font-size:13px;font-weight:700}.logo-sub{font-size:9px;color:var(--muted);font-family:var(--mono)}
+.nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.clock{font-family:var(--mono);font-size:10px;color:var(--gold)}
+.live-pill{display:flex;align-items:center;gap:4px;font-size:9px;color:var(--bull);
+  padding:3px 8px;border-radius:20px;border:1px solid rgba(0,232,122,.25);background:rgba(0,232,122,.06);font-family:var(--mono)}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--bull);animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.mkt-b{font-size:9px;font-weight:700;font-family:var(--mono);padding:3px 7px;border-radius:3px}
+.open{background:rgba(0,232,122,.12);color:var(--bull);border:1px solid rgba(0,232,122,.2)}
+.closed{background:var(--bg3);color:var(--muted);border:1px solid var(--border)}
+.tab-nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;padding:0 16px}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{padding:10px 13px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:none;
+  color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:.15s;font-family:var(--mono)}
+.tab-btn:hover{color:var(--text)}.tab-btn.active{color:var(--acc);border-bottom-color:var(--acc)}
+.tab-content{display:none}.tab-content.active{display:block}
+.page{padding:14px 16px}.mb{margin-bottom:14px}
+.sh{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sh h2{font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);white-space:nowrap;font-family:var(--mono)}
+.sl{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.sh-note{font-size:9px;color:var(--muted);font-family:var(--mono);white-space:nowrap}
+.banner{padding:10px 14px;border-radius:8px;margin-bottom:14px;border:1px solid;display:flex;gap:10px;align-items:flex-start}
+.b-bear{background:rgba(255,34,68,.06);border-color:rgba(255,34,68,.2)}
+.b-bull{background:rgba(0,232,122,.06);border-color:rgba(0,232,122,.2)}
+.b-title{font-size:13px;font-weight:700}.b-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.idx-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.idx-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;position:relative;overflow:hidden}
+.idx-card::before{content:'';position:absolute;top:0;left:0;width:2px;height:100%}
+.idx-card.bull::before{background:var(--bull)}.idx-card.bear::before{background:var(--bear)}.idx-card.warn::before{background:var(--warn)}
+.idx-nm{font-size:9px;color:var(--muted);font-family:var(--mono);letter-spacing:.5px}
+.idx-pr{font-size:20px;font-weight:700;font-family:var(--mono);margin:3px 0 2px}
+.idx-ch{font-size:10px;font-weight:700;padding:2px 5px;border-radius:3px}
+.bch{background:rgba(0,232,122,.1);color:var(--bull)}.rch{background:rgba(255,34,68,.1);color:var(--bear)}
+@keyframes flash-g{0%{background:rgba(0,232,122,.25)}100%{background:transparent}}
+@keyframes flash-r{0%{background:rgba(255,34,68,.25)}100%{background:transparent}}
+.fg{animation:flash-g .6s}.fr{animation:flash-r .6s}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--acc);animation:sp .8s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.card-hdr{padding:9px 13px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card-title{font-size:11px;font-weight:700}
+.chip{font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px;font-family:var(--mono)}
+.chip-g{background:rgba(0,232,122,.12);color:var(--bull)}.chip-r{background:rgba(255,34,68,.12);color:var(--bear)}
+.chip-a{background:rgba(108,71,255,.15);color:var(--acc)}.chip-y{background:rgba(255,200,66,.12);color:var(--gold)}
+.chip-b{background:rgba(255,140,0,.12);color:var(--warn)}
+.dt{width:100%;border-collapse:collapse;font-size:11px}
+.dt th{font-size:8px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);padding:6px 12px;text-align:left;border-bottom:1px solid var(--border);font-family:var(--mono);background:var(--bg3)}
+.dt td{padding:7px 12px;border-top:1px solid rgba(26,26,56,.5);font-family:var(--mono)}
+.dt tr:hover td{background:rgba(108,71,255,.04)}
+.bull-t{color:var(--bull)}.bear-t{color:var(--bear)}.gold-t{color:var(--gold)}.muted-t{color:var(--muted)}.warn-t{color:var(--warn)}
+.sf-hdr{display:grid;grid-template-columns:110px 1fr 65px 60px 60px;gap:8px;padding:6px 12px;font-size:8px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);border-bottom:1px solid var(--border);background:var(--bg3)}
+.sf-row{display:grid;grid-template-columns:110px 1fr 65px 60px 60px;gap:8px;padding:8px 12px;border-top:1px solid rgba(26,26,56,.5);cursor:pointer;transition:.15s;align-items:center}
+.sf-row:hover{background:rgba(108,71,255,.05)}.sf-row.sel{background:rgba(108,71,255,.08);border-left:2px solid var(--acc)}
+.sf-bar-bg{height:5px;background:var(--border);border-radius:3px;overflow:hidden}.sf-bar-fill{height:100%;border-radius:3px}
+.sp-hdr{display:grid;grid-template-columns:1.3fr .8fr .8fr .5fr 1fr .9fr;gap:8px;padding:6px 12px;font-size:8px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);border-bottom:1px solid var(--border);background:var(--bg3)}
+.sp-row{display:grid;grid-template-columns:1.3fr .8fr .8fr .5fr 1fr .9fr;gap:8px;padding:7px 12px;border-top:1px solid rgba(26,26,56,.4);cursor:pointer;transition:.15s;align-items:center}
+.sp-row:hover{background:rgba(108,71,255,.04)}
+.nr{font-family:var(--mono);font-size:11px;text-align:right}
+.bb{background:rgba(0,232,122,.1);color:var(--bull);font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px}
+.bs{background:rgba(255,34,68,.1);color:var(--bear);font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px}
+.bn{background:var(--bg3);color:var(--muted);font-size:8px;font-weight:700;padding:2px 5px;border-radius:3px}
+.rf-hdr{display:grid;grid-template-columns:1.3fr .7fr .8fr 1.3fr .6fr;gap:8px;padding:6px 12px;font-size:8px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);border-bottom:1px solid var(--border);background:var(--bg3)}
+.rf-row{display:grid;grid-template-columns:1.3fr .7fr .8fr 1.3fr .6fr;gap:8px;padding:7px 12px;border-top:1px solid rgba(26,26,56,.4);cursor:pointer;transition:.15s;align-items:center}
+.rf-row:hover{background:rgba(108,71,255,.04)}.rf-bar-w{display:flex;align-items:center;gap:5px}.rf-bar{height:5px;border-radius:3px;min-width:2px}
+.nf-btn{padding:4px 10px;border-radius:4px;font-size:9px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);transition:.15s;font-family:var(--mono)}
+.nf-btn:hover,.nf-btn.active{background:var(--acc);border-color:var(--acc);color:#fff}
+.news-item{padding:11px 13px;border-top:1px solid rgba(26,26,56,.5);cursor:pointer;transition:.15s;display:flex;gap:10px;align-items:flex-start}
+.news-item:hover{background:rgba(108,71,255,.04)}
+.news-src{font-size:8px;font-family:var(--mono);font-weight:700;padding:2px 6px;border-radius:3px;white-space:nowrap;flex-shrink:0;margin-top:1px}
+.news-hl{font-size:12px;font-weight:600;line-height:1.4;margin-bottom:3px}
+.news-desc{font-size:10px;color:var(--muted);line-height:1.4;margin-bottom:3px}
+.news-meta{font-size:9px;color:var(--muted);font-family:var(--mono)}
+.news-impact{display:inline-block;font-size:8px;font-weight:700;padding:1px 5px;border-radius:2px;margin-left:5px}
+.imp-h{background:rgba(255,34,68,.15);color:var(--bear)}.imp-m{background:rgba(255,140,0,.15);color:var(--warn)}.imp-l{background:rgba(90,90,120,.15);color:var(--muted)}
+.news-cat{font-size:8px;padding:1px 5px;border-radius:2px;margin-left:3px;display:inline-block}
+.news-loading{display:flex;align-items:center;gap:8px;padding:24px;font-size:11px;color:var(--muted);font-family:var(--mono);justify-content:center}
+.news-ts{font-size:9px;color:var(--muted);font-family:var(--mono);padding:6px 13px;border-top:1px solid var(--border);background:var(--bg3)}
+.setup{border-radius:9px;padding:14px;border:1px solid;margin-bottom:12px}
+.setup.bull{background:rgba(0,232,122,.04);border-color:rgba(0,232,122,.15)}
+.setup.bear{background:rgba(255,34,68,.04);border-color:rgba(255,34,68,.15)}
+.setup.warn{background:rgba(255,140,0,.04);border-color:rgba(255,140,0,.15)}
+.setup-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}
+.setup-title{font-size:13px;font-weight:700}
+.setup-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.ss{background:var(--bg3);border-radius:6px;padding:8px 10px;text-align:center}
+.ss-val{font-size:14px;font-weight:700;font-family:var(--mono)}.ss-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.conf-grid{display:grid;grid-template-columns:1fr 240px;gap:12px}
+.l-item{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border-radius:7px;border:1px solid var(--border);margin-bottom:7px}
+.l-left{display:flex;align-items:center;gap:9px}
+.l-num{width:20px;height:20px;border-radius:50%;background:var(--acc);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--mono)}
+.l-nm{font-size:11px;font-weight:600}.l-ds{font-size:9px;color:var(--muted)}
+.l-sel{padding:4px 7px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:var(--mono);font-size:9px;outline:none}
+.score-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.s-lbl{font-size:9px;color:var(--muted);font-family:var(--mono);text-transform:uppercase}
+.s-val{font-family:var(--mono);font-size:22px;font-weight:700}
+.sig-badge{padding:12px;border-radius:7px;text-align:center;font-family:var(--mono);font-size:12px;font-weight:700;margin-top:12px}
+.sig-w{background:var(--bg3);color:var(--muted);border:1px solid var(--border)}
+.sig-b{background:rgba(0,232,122,.1);color:var(--bull);border:1px solid rgba(0,232,122,.25);animation:gb 2s infinite}
+.sig-s{background:rgba(255,34,68,.1);color:var(--bear);border:1px solid rgba(255,34,68,.25);animation:gr 2s infinite}
+@keyframes gb{50%{box-shadow:0 0 14px rgba(0,232,122,.2)}}@keyframes gr{50%{box-shadow:0 0 14px rgba(255,34,68,.2)}}
+.pcr-g{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px}
+.pcr-s{background:var(--bg3);border-radius:7px;padding:10px 12px}
+.pcr-l{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono)}
+.pcr-v{font-size:18px;font-weight:700;font-family:var(--mono);margin-top:3px}
+.inp{width:100%;margin-top:4px;padding:6px 8px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:11px;outline:none}
+.inp:focus{border-color:var(--acc)}
+.inp-lbl{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-family:var(--mono)}
+.rules-box{padding:14px 16px;background:rgba(255,140,0,.05);border:1px solid rgba(255,140,0,.15);border-radius:8px}
+.rule-i{display:flex;align-items:flex-start;gap:7px;font-size:11px;margin-bottom:6px;color:var(--text)}
+.rule-n{width:18px;height:18px;border-radius:50%;background:rgba(255,140,0,.15);color:var(--warn);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--mono);margin-top:1px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(3,3,10,.9);z-index:500;backdrop-filter:blur(6px)}
+.overlay.show{display:flex;align-items:center;justify-content:center}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;width:min(600px,94vw);max-height:88vh;overflow-y:auto;padding:20px}
+.m-hdr{display:flex;justify-content:space-between;margin-bottom:16px}
+.m-sym{font-size:22px;font-weight:800;font-family:var(--mono)}
+.m-close{width:28px;height:28px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:14px}
+.m-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.m-st{background:var(--bg3);border-radius:7px;padding:10px 12px}
+.m-sl{font-size:8px;color:var(--muted);font-family:var(--mono);text-transform:uppercase}
+.m-sv{font-size:17px;font-weight:700;font-family:var(--mono);margin-top:2px}
+.m-ana{background:var(--bg3);border-radius:7px;padding:12px;font-size:12px;line-height:1.7}
+.status-bar{text-align:center;padding:8px;font-size:9px;color:var(--muted);font-family:var(--mono);border-top:1px solid var(--border)}
+.status-bar span{color:var(--acc)}
+.ql{padding:6px 12px;border-radius:5px;font-size:10px;font-weight:600;text-decoration:none;display:inline-block;margin:3px;transition:.15s}
+.ql:hover{opacity:.8}
+@media(max-width:768px){
+  .g2,.g3,.conf-grid{grid-template-columns:1fr}
+  .pcr-g,.setup-grid{grid-template-columns:1fr 1fr}
+  .idx-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo"><div class="logo-box">MQ</div>
+    <div><div class="logo-name">MEGA QUANT v3</div><div class="logo-sub">Live Indian Market Intelligence</div></div></div>
+  <div class="nav-r">
+    <span style="font-size:9px;color:var(--muted);font-family:var(--mono)" id="updStamp"></span>
+    <div class="mkt-b closed" id="mktBadge">NSE CLOSED</div>
+    <div class="clock" id="clock">--:--:-- IST</div>
+    <div class="live-pill"><div class="dot"></div>LIVE</div>
+  </div>
+</nav>
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('t1',this)">📊 Market</button>
+  <button class="tab-btn" onclick="switchTab('t2',this)">📈 Charts</button>
+  <button class="tab-btn" onclick="switchTab('t3',this)">🔍 Analysis</button>
+  <button class="tab-btn" onclick="switchTab('t4',this)">🏭 Sectors</button>
+  <button class="tab-btn" onclick="switchTab('t5',this)">🌍 Global</button>
+  <button class="tab-btn" onclick="switchTab('t6',this)">🎯 Trade Plan</button>
+  <button class="tab-btn" onclick="switchTab('t7',this)">📰 Live News</button>
+  <button class="tab-btn" onclick="switchTab('t8',this)">⚡ Signal</button>
+</div>
+<div class="tab-content active" id="t1"><div class="page">
+<div class="banner b-bull mb">
+  <span style="font-size:18px;flex-shrink:0">⚠️</span>
+  <div><div class="b-title bear-t">BOUNCE IN PROGRESS — 1hr Bull Gate Open · May 15, 2026</div>
+  <div class="b-sub">Nifty 23,658 · RSI 29.0 OVERSOLD · BankNifty RSI 26.3 EXTREME OS · FII $22B record selloff · US-Iran fragile · Support 24,000→23,700</div></div>
+</div>
+<div class="sh mb"><h2>Live Indices</h2><div class="sl"></div><span class="sh-note">Stooq API · 5s refresh</span></div>
+<div class="idx-grid mb">
+  <div class="idx-card bear"><div class="idx-nm">NIFTY 50</div><div class="idx-pr" id="iv-n" style="color:var(--bull)">23,658</div><span class="idx-ch rch" id="ic-n">BOUNCE ACTIVE</span></div>
+  <div class="idx-card bear"><div class="idx-nm">BANK NIFTY</div><div class="idx-pr" id="iv-b">53,895</div><span class="idx-ch rch" id="ic-b">RANGING ADX 9.98</span></div>
+  <div class="idx-card bear"><div class="idx-nm">SENSEX</div><div class="idx-pr" id="iv-s">~78,100</div><span class="idx-ch rch" id="ic-s">Fetching...</span></div>
+  <div class="idx-card warn"><div class="idx-nm">INDIA VIX</div><div class="idx-pr warn-t" id="iv-v">—</div><span class="idx-ch chip-b" id="ic-v">Elevated</span></div>
+  <div class="idx-card"><div class="idx-nm">GIFT NIFTY</div><div class="idx-pr" id="iv-g">—</div><span class="idx-ch muted-t" id="ic-g">Pre-mkt proxy</span></div>
+  <div class="idx-card"><div class="idx-nm">FIN NIFTY</div><div class="idx-pr" id="iv-f">—</div><span class="idx-ch muted-t" id="ic-f">Fetching...</span></div>
+</div>
+<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px">
+<div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+{"symbols":[{"proName":"NSE:NIFTY","title":"Nifty"},{"proName":"NSE:BANKNIFTY","title":"BankNifty"},{"proName":"BSE:SENSEX","title":"Sensex"},{"proName":"NSE:INDIAVIX","title":"VIX"},{"proName":"NSE:FINNIFTY","title":"FinNifty"},{"proName":"NSE:MIDCPNIFTY","title":"Midcap"},{"proName":"NSE:RELIANCE"},{"proName":"NSE:HDFCBANK"},{"proName":"NSE:TCS"},{"proName":"NSE:INFY"},{"proName":"NSE:HAL"},{"proName":"NSE:BEL"},{"proName":"NSE:ICICIBANK"},{"proName":"NSE:SBIN"},{"proName":"NSE:LT"},{"proName":"NSE:SUNPHARMA"},{"proName":"NSE:ITC"},{"proName":"NSE:NTPC"},{"proName":"NSE:TATASTEEL"},{"proName":"NSE:MARUTI"}],"showSymbolLogo":false,"isTransparent":true,"displayMode":"adaptive","colorTheme":"dark","locale":"en"}
+</script></div></div>
+<div class="sh mb"><h2>Top Movers Live</h2><div class="sl"></div></div>
+<div class="g2 mb">
+  <div class="card"><div class="card-hdr"><span class="card-title">🚀 Gainers</span><span class="chip chip-g">LIVE</span></div>
+    <div style="display:grid;grid-template-columns:1.4fr .9fr .7fr .8fr;gap:8px;padding:6px 12px;font-size:8px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);border-bottom:1px solid var(--border);background:var(--bg3)"><span>STOCK</span><span style="text-align:right">LTP</span><span style="text-align:right">CHG%</span><span style="text-align:right">R-FACTOR</span></div>
+    <div id="gainersBody"><div class="news-loading"><span class="spin"></span> Fetching...</div></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">🔻 Losers</span><span class="chip chip-r">LIVE</span></div>
+    <div style="display:grid;grid-template-columns:1.4fr .9fr .7fr .8fr;gap:8px;padding:6px 12px;font-size:8px;text-transform:uppercase;color:var(--muted);font-family:var(--mono);border-bottom:1px solid var(--border);background:var(--bg3)"><span>STOCK</span><span style="text-align:right">LTP</span><span style="text-align:right">CHG%</span><span style="text-align:right">R-FACTOR</span></div>
+    <div id="losersBody"><div class="news-loading"><span class="spin"></span> Fetching...</div></div></div>
+</div>
+<div class="sh mb"><h2>NSE Screener</h2><div class="sl"></div></div>
+<div class="g2">
+  <div class="card"><div class="card-hdr"><span class="card-title">🚀 Top Gainers</span><span class="chip chip-g">TV</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
+    {"width":"100%","height":340,"defaultColumn":"overview","defaultScreen":"top_gainers","market":"india","showToolbar":false,"colorTheme":"dark","locale":"en","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">🔻 Top Losers</span><span class="chip chip-r">TV</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-screener.js" async>
+    {"width":"100%","height":340,"defaultColumn":"overview","defaultScreen":"top_losers","market":"india","showToolbar":false,"colorTheme":"dark","locale":"en","isTransparent":true}
+    </script></div></div>
+</div>
+</div></div>
+<div class="tab-content" id="t2"><div class="page">
+<div class="sh mb"><h2>Nifty 50 — Full Live Chart</h2><div class="sl"></div><span class="sh-note">15-min · All indicators</span></div>
+<div class="card mb">
+<div class="tradingview-widget-container" style="height:480px"><div class="tradingview-widget-container__widget" style="height:480px"></div>
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+{"autosize":true,"symbol":"NSE:NIFTY","interval":"15","timezone":"Asia/Kolkata","theme":"dark","style":"1","locale":"en","withdateranges":true,"hide_side_toolbar":false,"allow_symbol_change":true,"watchlist":["NSE:NIFTY","NSE:BANKNIFTY","BSE:SENSEX","NSE:INDIAVIX","NSE:RELIANCE","NSE:HDFCBANK","NSE:TCS","NSE:INFY","NSE:ICICIBANK","NSE:SBIN","NSE:HAL","NSE:BEL","NSE:LT","NSE:SUNPHARMA","NSE:MARUTI","NSE:TATASTEEL"],"studies":["STD;VWAP","STD;Supertrend","STD;EMA","STD;RSI","STD;MACD","STD;Bollinger_Bands","STD;Average_True_Range"],"show_popup_button":true,"isTransparent":true}
+</script></div></div>
+<div class="sh mb"><h2>Bank Nifty — Live Chart</h2><div class="sl"></div><span class="sh-note">RSI 26.3 EXTREME OS · ATR 281pts</span></div>
+<div class="card mb">
+<div class="tradingview-widget-container" style="height:420px"><div class="tradingview-widget-container__widget" style="height:420px"></div>
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+{"autosize":true,"symbol":"NSE:BANKNIFTY","interval":"15","timezone":"Asia/Kolkata","theme":"dark","style":"1","locale":"en","withdateranges":true,"hide_side_toolbar":false,"allow_symbol_change":true,"studies":["STD;VWAP","STD;Supertrend","STD;EMA","STD;RSI","STD;MACD","STD;Bollinger_Bands"],"show_popup_button":true,"isTransparent":true}
+</script></div></div>
+<div class="sh mb"><h2>Mini Charts — Key Instruments</h2><div class="sl"></div></div>
+<div class="g3 mb">
+  <div class="card"><div class="card-hdr"><span class="card-title">SENSEX</span><span class="chip chip-a">BSE</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"BSE:SENSEX","width":"100%","height":180,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ffc842","underLineColor":"rgba(255,200,66,0.1)","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">HAL</span><span class="chip chip-g">DEFENCE ↑</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"NSE:HAL","width":"100%","height":180,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#00e87a","underLineColor":"rgba(0,232,122,0.1)","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">GOLD MCX</span><span class="chip chip-y">SAFE HAVEN ↑</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"MCX:GOLD1!","width":"100%","height":180,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ffc842","underLineColor":"rgba(255,200,66,0.1)","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">CRUDE OIL MCX</span><span class="chip chip-b">VOLATILE</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"MCX:CRUDEOIL1!","width":"100%","height":180,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ff8c00","underLineColor":"rgba(255,140,0,0.08)","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">USD/INR</span><span class="chip chip-r">INR WEAK</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"FX_IDC:USDINR","width":"100%","height":180,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ff2244","underLineColor":"rgba(255,34,68,0.08)","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">BITCOIN</span><span class="chip chip-y">RISK GAUGE</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"BITSTAMP:BTCUSD","width":"100%","height":180,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ffc842","underLineColor":"rgba(255,200,66,0.08)","isTransparent":true}
+    </script></div></div>
+</div>
+<div class="sh mb"><h2>Market Heatmap</h2><div class="sl"></div></div>
+<div class="card">
+<div class="tradingview-widget-container" style="height:500px"><div class="tradingview-widget-container__widget" style="height:500px"></div>
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-stock-heatmap.js" async>
+{"exchanges":[],"dataSource":"SENSEX","grouping":"sector","blockSize":"market_cap_basic","blockColor":"change","locale":"en","colorTheme":"dark","hasTopBar":false,"isZoomEnabled":true,"hasSymbolTooltip":true,"isMonoSize":false,"width":"100%","height":"500","isTransparent":true}
+</script></div></div>
+</div></div>
+<div class="tab-content" id="t3"><div class="page">
+<div class="sh mb"><h2>Market Snapshot — Groww MCP Live Data</h2><div class="sl"></div></div>
+<div class="card mb">
+<table class="dt">
+<thead><tr><th>INDEX</th><th>CLOSE</th><th>CHANGE</th><th>RSI</th><th>MACD HIST</th><th>ADX</th><th>-DI/+DI</th><th>VWAP</th><th>ATR</th><th>STATUS</th></tr></thead>
+<tbody>
+<tr><td style="font-weight:700">Nifty 50</td><td class="bear-t">24,228</td><td class="bear-t">-0.72%</td><td class="bull-t"><strong>60.2 (RECOVERED)</strong></td><td class="bear-t">-20.97</td><td class="warn-t">29.7</td><td class="bear-t">29.16/11.96</td><td>24,205</td><td class="gold-t">95.4</td><td style="font-size:10px;color:var(--warn)">OVERSOLD·24k support</td></tr>
+<tr><td style="font-weight:700">Bank Nifty</td><td class="bear-t">55,500</td><td class="bear-t">-1.46%</td><td class="bull-t"><strong>26.3 ⚡</strong></td><td class="bear-t">-83.25</td><td class="bear-t">34.3</td><td class="bear-t">35.68/8.91</td><td>55,621</td><td class="gold-t">281</td><td style="font-size:10px;color:var(--bear)">EXTREME OS</td></tr>
+<tr><td style="font-weight:700">Nifty May 7</td><td class="bull-t">24,405</td><td class="bull-t">+0.3%</td><td class="gold-t">54.15</td><td class="bull-t">+1.37</td><td class="gold-t">22.6</td><td>17.4/21.5</td><td>24,338</td><td>24.9</td><td style="font-size:10px;color:var(--muted)">5-min previous</td></tr>
+<tr><td style="font-weight:700">Nifty 1hr</td><td class="bull-t">24,405</td><td class="bull-t">+0.3%</td><td class="bull-t">67.0</td><td class="bull-t">+16.38</td><td class="bull-t">29.37</td><td class="bull-t">41.77/17.19</td><td>24,201</td><td>106.6</td><td style="font-size:10px;color:var(--bull)">HTF BULL ← v3 gate</td></tr>
+</tbody></table></div>
+
+<div class="sh mb"><h2>Multi-Timeframe Conflict — Why v3 Needs HTF Filter</h2><div class="sl"></div></div>
+<div class="card mb">
+<table class="dt">
+<thead><tr><th>TF</th><th>RSI</th><th>MACD HIST</th><th>SuperTrend</th><th>ADX/+DI/-DI</th><th>VWAP</th><th>BIAS</th></tr></thead>
+<tbody>
+<tr><td class="warn-t" style="font-weight:700">5-min</td><td class="gold-t">54.15</td><td class="bull-t">+1.37</td><td class="bull-t">BULL(dir=-1)</td><td>22.6/17.4/21.5</td><td class="bull-t">ABOVE</td><td style="font-size:10px"><span class="chip chip-b">MIXED</span></td></tr>
+<tr><td class="bear-t" style="font-weight:700">10-min</td><td class="bear-t">43.78</td><td class="bear-t">-4.15</td><td class="bear-t">BEAR(dir=+1)</td><td class="bear-t">21.3/10.95/31.91</td><td class="bull-t">ABOVE</td><td style="font-size:10px"><span class="chip chip-r">BEARISH</span></td></tr>
+<tr><td class="bull-t" style="font-weight:700">60-min</td><td class="bull-t">67.0</td><td class="bull-t">+16.38</td><td class="bull-t">BULL</td><td class="bull-t">29.4/41.77/17.19</td><td class="bull-t">ABOVE</td><td style="font-size:10px"><span class="chip chip-g">STRONG BULL</span></td></tr>
+</tbody></table>
+<div style="padding:10px 12px;font-size:11px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border)">
+<strong style="color:var(--warn)">Critical finding:</strong> 5-min MACD +1.37 vs 10-min MACD -4.15 at same timestamp = opposing signals. v3 adds the 60-min HTF gate (+DI 41.77 >> -DI 17.19) as master filter. This eliminated false entries.
+</div></div>
+
+<div class="g2 mb">
+<div class="card"><div class="card-hdr"><span class="card-title">Nifty Technical Status</span><span class="chip chip-r">BEARISH</span></div>
+<table class="dt">
+<tr><td class="muted-t">RSI (14)</td><td class="bull-t"><strong>29.0 — OVERSOLD ⚡</strong></td></tr>
+<tr><td class="muted-t">MACD Hist</td><td class="bear-t">-20.97 Bearish</td></tr>
+<tr><td class="muted-t">ADX/+DI/-DI</td><td>29.7 / 11.96 / <span class="bear-t">29.16</span></td></tr>
+<tr><td class="muted-t">SuperTrend</td><td class="bear-t">BEARISH (dir=+1)</td></tr>
+<tr><td class="muted-t">VWAP</td><td>24,205 — Price near VWAP</td></tr>
+<tr><td class="muted-t">BB Lower</td><td class="bull-t">24,074 — Bounce zone</td></tr>
+<tr><td class="muted-t">ATR (1hr)</td><td class="gold-t">95.4 pts</td></tr>
+<tr><td class="muted-t">Support</td><td class="bull-t">24,000 · 23,700 · 23,350</td></tr>
+<tr><td class="muted-t">Resistance</td><td class="bear-t">24,500 · 24,700 · 25,000</td></tr>
+</table></div>
+<div class="card"><div class="card-hdr"><span class="card-title">BankNifty Technical Status</span><span class="chip chip-r">EXTREME BEAR</span></div>
+<table class="dt">
+<tr><td class="muted-t">RSI (14)</td><td class="bull-t"><strong>26.3 — EXTREME OVERSOLD ⚡</strong></td></tr>
+<tr><td class="muted-t">MACD Hist</td><td class="bear-t">-83.25 Sharp Sell</td></tr>
+<tr><td class="muted-t">ADX/+DI/-DI</td><td>34.3 / 8.91 / <span class="bear-t">35.68</span></td></tr>
+<tr><td class="muted-t">SuperTrend</td><td class="bear-t">BEARISH</td></tr>
+<tr><td class="muted-t">VWAP</td><td>55,621 — Price near VWAP</td></tr>
+<tr><td class="muted-t">BB Lower</td><td class="bull-t">54,913 — Near bounce</td></tr>
+<tr><td class="muted-t">ATR (1hr)</td><td class="gold-t">281 pts (VERY WIDE)</td></tr>
+<tr><td class="muted-t">Support</td><td class="bull-t">55,000 · 54,500 · 54,000</td></tr>
+<tr><td class="muted-t">Resistance</td><td class="bear-t">56,000 · 56,400 · 57,000</td></tr>
+</table></div>
+</div>
+
+<div class="sh mb"><h2>Quick Verdict — 5 Points</h2><div class="sl"></div></div>
+<div class="rules-box mb">
+<div class="rule-i"><div class="rule-n" style="background:rgba(0,232,122,.15);color:var(--bull)">+</div><strong>RSI 29/26</strong> = Historically strong oversold bounce zone. Mean reversion building.</div>
+<div class="rule-i"><div class="rule-n" style="background:rgba(255,34,68,.15);color:var(--bear)">-</div><strong>FII $22B selloff + US-Iran fragile ceasefire + ADX 29-34</strong> = strong downtrend confirmed.</div>
+<div class="rule-i"><div class="rule-n" style="background:rgba(0,191,255,.15);color:var(--info)">👁</div><strong>Critical level: Nifty 24,000</strong>. Break below → 23,700. Hold + RSI divergence → 24,500.</div>
+<div class="rule-i"><div class="rule-n" style="background:rgba(255,140,0,.15);color:var(--warn)">!</div><strong>Geopolitical premium</strong> in market. Any ceasefire = gap-up. Any escalation = -300-500 more.</div>
+<div class="rule-i"><div class="rule-n" style="background:rgba(108,71,255,.15);color:var(--acc)">★</div><strong>Opportunities:</strong> Defence (HAL, BEL), Gold plays (Titan, Muthoot), IT exports (TCS, Infy).</div>
+</div>
+<div class="sh mb"><h2>Economic Calendar</h2><div class="sl"></div></div>
+<div class="card">
+<div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+{"colorTheme":"dark","isTransparent":true,"width":"100%","height":340,"locale":"en","importanceFilter":"0,1","countryFilter":"in,us"}
+</script></div></div>
+</div></div>
+<div class="tab-content" id="t4"><div class="page">
+<div class="sh mb"><h2>Sector Money Flow</h2><div class="sl"></div><span class="sh-note">Click sector → stocks live</span></div>
+<div class="g2 mb">
+<div class="card"><div class="card-hdr"><span class="card-title">💰 Sector Flow Ranking</span><span class="chip chip-g">STOOQ LIVE</span></div>
+  <div class="sf-hdr"><span>SECTOR</span><span>FLOW</span><span style="text-align:right">CHG%</span><span style="text-align:right">₹Cr</span><span style="text-align:right">R-MAX</span></div>
+  <div id="sectorFlowList"><div class="news-loading"><span class="spin"></span> Loading...</div></div>
+</div>
+<div>
+  <div class="sh mb"><h2 id="selSec">SELECT A SECTOR</h2><div class="sl"></div></div>
+  <div class="card">
+    <div class="sp-hdr"><span>SYMBOL</span><span style="text-align:right">LTP</span><span style="text-align:right">CHG%</span><span style="text-align:right">VOL×</span><span>CANDLE</span><span style="text-align:right">R-FACTOR</span></div>
+    <div id="stockList"><div style="padding:30px;text-align:center;color:var(--muted);font-size:12px">← Click a sector</div></div>
+  </div>
+</div>
+</div>
+<div class="g2 mb">
+<div class="card"><div class="card-hdr"><span class="card-title">⚡ High Power Stocks</span><span class="chip chip-y">R &gt; 15</span></div>
+  <div class="rf-hdr"><span>SYMBOL</span><span>SEC</span><span style="text-align:right">CHG%</span><span>R-FACTOR</span><span>BIAS</span></div>
+  <div id="highRBody"><div class="news-loading"><span class="spin"></span></div></div>
+</div>
+<div class="card"><div class="card-hdr"><span class="card-title">🚀 Intraday Boost</span><span class="chip chip-g">HIGH VOL</span></div>
+  <div class="rf-hdr"><span>SYMBOL</span><span>SEC</span><span style="text-align:right">CHG%</span><span>R-FACTOR</span><span>VOL×</span></div>
+  <div id="boostBody"><div class="news-loading"><span class="spin"></span></div></div>
+</div>
+</div>
+<div class="sh mb"><h2>Sector Overview — All 10 Sectors</h2><div class="sl"></div></div>
+<div class="card">
+<div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+<script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+{"colorTheme":"dark","dateRange":"1D","showChart":true,"locale":"en","isTransparent":true,"showSymbolLogo":true,"width":"100%","height":560,"tabs":[{"title":"🇮🇳 Nifty50","symbols":[{"s":"NSE:RELIANCE"},{"s":"NSE:HDFCBANK"},{"s":"NSE:ICICIBANK"},{"s":"NSE:INFY"},{"s":"NSE:TCS"},{"s":"NSE:ITC"},{"s":"NSE:LT"},{"s":"NSE:SBIN"},{"s":"NSE:AXISBANK"},{"s":"NSE:KOTAKBANK"}]},{"title":"🛡 Defence","symbols":[{"s":"NSE:HAL"},{"s":"NSE:BEL"},{"s":"NSE:BDL"},{"s":"NSE:COCHINSHIP"}]},{"title":"💻 IT","symbols":[{"s":"NSE:INFY"},{"s":"NSE:TCS"},{"s":"NSE:WIPRO"},{"s":"NSE:HCLTECH"},{"s":"NSE:TECHM"}]},{"title":"🏦 Banking","symbols":[{"s":"NSE:HDFCBANK"},{"s":"NSE:ICICIBANK"},{"s":"NSE:KOTAKBANK"},{"s":"NSE:AXISBANK"},{"s":"NSE:SBIN"}]},{"title":"💊 Pharma","symbols":[{"s":"NSE:SUNPHARMA"},{"s":"NSE:DRREDDY"},{"s":"NSE:CIPLA"},{"s":"NSE:DIVISLAB"},{"s":"NSE:LUPIN"}]},{"title":"🚗 Auto","symbols":[{"s":"NSE:MARUTI"},{"s":"NSE:TATAMOTORS"},{"s":"NSE:M_M"},{"s":"NSE:BAJAJ-AUTO"},{"s":"NSE:HEROMOTOCO"}]},{"title":"⚡ Energy","symbols":[{"s":"NSE:RELIANCE"},{"s":"NSE:ONGC"},{"s":"NSE:NTPC"},{"s":"NSE:POWERGRID"},{"s":"NSE:BPCL"}]},{"title":"⚙ Metals","symbols":[{"s":"NSE:TATASTEEL"},{"s":"NSE:HINDALCO"},{"s":"NSE:JSWSTEEL"},{"s":"NSE:COALINDIA"}]},{"title":"🛒 FMCG","symbols":[{"s":"NSE:HINDUNILVR"},{"s":"NSE:ITC"},{"s":"NSE:NESTLEIND"},{"s":"NSE:BRITANNIA"}]},{"title":"🏗 Infra","symbols":[{"s":"NSE:LT"},{"s":"NSE:ADANIENT"},{"s":"NSE:SIEMENS"},{"s":"NSE:ABB"}]}]}
+</script></div></div>
+</div></div>
+<div class="tab-content" id="t5"><div class="page">
+<div class="sh mb"><h2>Commodities & Global Markets Live</h2><div class="sl"></div></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:14px">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px">
+    <div style="font-size:9px;color:var(--muted);font-family:var(--mono)">GOLD MCX</div>
+    <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--gold);margin:3px 0 2px">₹94,000+</div>
+    <div style="font-size:10px;font-weight:700;color:var(--bull)">↑ SAFE HAVEN</div>
+    <div style="font-size:9px;color:var(--muted);margin-top:3px">US-Iran war buying. Titan/Muthoot benefit.</div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px">
+    <div style="font-size:9px;color:var(--muted);font-family:var(--mono)">BRENT CRUDE</div>
+    <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--warn);margin:3px 0 2px">$65-68</div>
+    <div style="font-size:10px;font-weight:700;color:var(--warn)">↕ VOLATILE</div>
+    <div style="font-size:9px;color:var(--muted);margin-top:3px">Hormuz tension. BPCL/HPCL bearish.</div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px">
+    <div style="font-size:9px;color:var(--muted);font-family:var(--mono)">USD/INR</div>
+    <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--bear);margin:3px 0 2px">~84.5</div>
+    <div style="font-size:10px;font-weight:700;color:var(--bear)">↑ INR WEAK</div>
+    <div style="font-size:9px;color:var(--muted);margin-top:3px">IT exporters benefit. Importers suffer.</div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px">
+    <div style="font-size:9px;color:var(--muted);font-family:var(--mono)">US 10Y YIELD</div>
+    <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--warn);margin:3px 0 2px">~4.3%</div>
+    <div style="font-size:10px;font-weight:700;color:var(--warn)">↑ ELEVATED</div>
+    <div style="font-size:9px;color:var(--muted);margin-top:3px">FII EM outflows continue.</div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px">
+    <div style="font-size:9px;color:var(--muted);font-family:var(--mono)">SILVER MCX</div>
+    <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--gold);margin:3px 0 2px">₹93,000+</div>
+    <div style="font-size:10px;font-weight:700;color:var(--bull)">↑ BULL</div>
+    <div style="font-size:9px;color:var(--muted);margin-top:3px">Following gold safe haven surge.</div>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px">
+    <div style="font-size:9px;color:var(--muted);font-family:var(--mono)">DOLLAR INDEX</div>
+    <div style="font-size:22px;font-weight:700;font-family:var(--mono);color:var(--warn);margin:3px 0 2px">~103</div>
+    <div style="font-size:10px;font-weight:700;color:var(--warn)">↑ STRONG</div>
+    <div style="font-size:9px;color:var(--muted);margin-top:3px">All EM currencies under pressure.</div>
+  </div>
+</div>
+<div class="g2 mb">
+<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px">
+  <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:10px">FII/DII FLOWS — 2026 YTD</div>
+  <div style="font-size:26px;font-weight:700;color:var(--bear);font-family:var(--mono);margin-bottom:6px">-$22 Billion FII</div>
+  <div style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px">Record FII selloff in 2026 YTD. Goldman Sachs: may persist. US-Iran + rate uncertainty.</div>
+  <div style="display:flex;align-items:center;gap:8px;padding:7px 0">
+    <span style="font-size:10px;color:var(--muted);width:70px;font-family:var(--mono)">FII SELL</span>
+    <div style="flex:1;height:7px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:85%;height:100%;background:var(--bear);border-radius:3px"></div></div>
+    <span style="font-size:11px;font-weight:700;color:var(--bear);font-family:var(--mono);width:90px;text-align:right">-₹1,82,000Cr</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;padding:7px 0">
+    <span style="font-size:10px;color:var(--muted);width:70px;font-family:var(--mono)">DII BUY</span>
+    <div style="flex:1;height:7px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:55%;height:100%;background:var(--bull);border-radius:3px"></div></div>
+    <span style="font-size:11px;font-weight:700;color:var(--bull);font-family:var(--mono);width:90px;text-align:right">+₹1,18,000Cr</span>
+  </div>
+</div>
+<div class="card"><div class="card-hdr"><span class="card-title">Geopolitical Risk Matrix</span><span class="chip chip-r">RISK-OFF</span></div>
+<table class="dt">
+<tr><td style="font-weight:700">US-Iran War</td><td class="bear-t">🔴 ACTIVE · Ceasefire fragile</td></tr>
+<tr><td style="font-weight:700">India-Pakistan</td><td class="warn-t">🟡 Tense · Holding</td></tr>
+<tr><td style="font-weight:700">US Tariffs</td><td class="warn-t">🟡 90-day pause</td></tr>
+<tr><td style="font-weight:700">China slowdown</td><td class="bear-t">🔴 Metals demand weak</td></tr>
+<tr><td style="font-weight:700">Oil supply risk</td><td class="bear-t">🔴 Hormuz tension</td></tr>
+<tr><td style="font-weight:700">Fed rate path</td><td class="warn-t">🟡 Cut delayed</td></tr>
+<tr><td style="font-weight:700">RBI stance</td><td class="bull-t">🟢 Supportive</td></tr>
+<tr><td style="font-weight:700">India GDP</td><td class="bull-t">🟢 7%+ intact</td></tr>
+</table></div>
+</div>
+<div class="sh mb"><h2>Global Live Charts</h2><div class="sl"></div></div>
+<div class="g3">
+  <div class="card"><div class="card-hdr"><span class="card-title">GOLD</span><span class="chip chip-y">SAFE HAVEN</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"TVC:GOLD","width":"100%","height":160,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ffc842","underLineColor":"rgba(255,200,66,0.1)","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">BRENT CRUDE</span><span class="chip chip-b">OIL RISK</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"TVC:UKOIL","width":"100%","height":160,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ff8c00","underLineColor":"rgba(255,140,0,0.08)","isTransparent":true}
+    </script></div></div>
+  <div class="card"><div class="card-hdr"><span class="card-title">US 10Y YIELD</span><span class="chip chip-r">FII FLOW</span></div>
+    <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+    {"symbol":"TVC:US10Y","width":"100%","height":160,"locale":"en","dateRange":"1D","colorTheme":"dark","trendLineColor":"#ff2244","underLineColor":"rgba(255,34,68,0.08)","isTransparent":true}
+    </script></div></div>
+</div>
+</div></div>
+<div class="tab-content" id="t6"><div class="page">
+<div class="sh mb"><h2>Pro Trader Plan — Grounded in Live Groww MCP Data</h2><div class="sl"></div></div>
+<div class="setup warn">
+  <div class="setup-hdr"><div><div class="setup-title warn-t">⚠ Market Environment — May 12 Monday Open</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:3px">ADX 29-34 trending · -DI dominant · RSI 26-29 oversold · VIX elevated</div></div>
+    <span class="chip chip-b">CAUTION</span></div>
+  <div style="font-size:12px;line-height:1.7">
+    <strong style="color:var(--bull)">Scenario A (40%):</strong> RSI bounce · Gap up or early relief · Fade at resistance 24,400.<br>
+    <strong style="color:var(--bear)">Scenario B (60%):</strong> Continuation · Test 24,000 · Possible capitulation.
+  </div>
+</div>
+<div class="setup bear">
+  <div class="setup-hdr"><div><div class="setup-title bear-t">🔴 Primary — Nifty PUT (S1+S5 Confluence)</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:2px">OR low break + Vol>1.3× + 60min HTF bearish gate</div></div>
+    <span class="chip chip-r">62% PROB</span></div>
+  <div class="setup-grid">
+    <div class="ss"><div class="ss-val bear-t">24,150</div><div class="ss-lbl">Entry</div></div>
+    <div class="ss"><div class="ss-val gold-t">24,000</div><div class="ss-lbl">Target 1</div></div>
+    <div class="ss"><div class="ss-val bull-t">23,700</div><div class="ss-lbl">Target 2</div></div>
+    <div class="ss"><div class="ss-val warn-t">24,350</div><div class="ss-lbl">Stop Loss</div></div>
+  </div>
+  <div style="font-size:11px;line-height:1.7">
+    <strong>Instrument:</strong> Nifty 24,100 PE · Weekly · 1 strike OTM · <strong>Window:</strong> 9:30–10:00 AM only<br>
+    <strong>R:R:</strong> 1:2.5 min · <strong>Max premium:</strong> ₹2,500 · <strong>Invalidation:</strong> Price > 24,400
+  </div>
+</div>
+<div class="setup bull">
+  <div class="setup-hdr"><div><div class="setup-title bull-t">🟢 Bounce — Nifty CALL (RSI Divergence)</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:2px">Only IF RSI divergence + VWAP cross + L4+L5 green</div></div>
+    <span class="chip chip-g">45% PROB</span></div>
+  <div class="setup-grid">
+    <div class="ss"><div class="ss-val bull-t">24,100</div><div class="ss-lbl">Entry</div></div>
+    <div class="ss"><div class="ss-val gold-t">24,400</div><div class="ss-lbl">Target 1</div></div>
+    <div class="ss"><div class="ss-val bull-t">24,650</div><div class="ss-lbl">Target 2</div></div>
+    <div class="ss"><div class="ss-val warn-t">23,960</div><div class="ss-lbl">Stop Loss</div></div>
+  </div>
+  <div style="font-size:11px;line-height:1.7">
+    <strong>Instrument:</strong> Nifty 24,200 CE · ATM · Weekly · <strong>HALF SIZE:</strong> ₹1,500 max premium<br>
+    <strong>Note:</strong> Do NOT enter if PUT setup already triggered today
+  </div>
+</div>
+<div class="setup bear">
+  <div class="setup-hdr"><div><div class="setup-title bear-t">🏦 BankNifty — Extreme Oversold PUT</div>
+    <div style="font-size:10px;color:var(--muted);margin-top:2px">RSI 26.3 · ADX 34 · -DI 35.68 · ATR 281pts = very high vol</div></div>
+    <span class="chip chip-b">WIDE SL</span></div>
+  <div class="setup-grid">
+    <div class="ss"><div class="ss-val bear-t">55,200</div><div class="ss-lbl">Entry</div></div>
+    <div class="ss"><div class="ss-val gold-t">54,700</div><div class="ss-lbl">Target 1</div></div>
+    <div class="ss"><div class="ss-val bull-t">54,000</div><div class="ss-lbl">Target 2</div></div>
+    <div class="ss"><div class="ss-val warn-t">55,700</div><div class="ss-lbl">Stop Loss</div></div>
+  </div>
+  <div style="font-size:11px;line-height:1.7">
+    <strong>Instrument:</strong> BankNifty 55,000 PE · Weekly · ATR SL: 1.5×281=420pts · <strong>Max:</strong> ₹2,000 premium
+  </div>
+</div>
+<div class="sh mb"><h2>Daily OI / PCR Intelligence</h2><div class="sl"></div></div>
+<div class="card mb">
+<div class="pcr-g">
+  <div class="pcr-s"><div class="pcr-l">PCR TODAY</div><div class="pcr-v bear-t" id="pcrVal">0.85</div><div style="font-size:9px;color:var(--bear);font-family:var(--mono);margin-top:2px" id="pcrSig">BEARISH</div></div>
+  <div class="pcr-s"><div class="pcr-l">CALL OI WALL</div><div class="pcr-v bear-t" id="callWallV">—</div><div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-top:2px">RESISTANCE</div></div>
+  <div class="pcr-s"><div class="pcr-l">PUT OI WALL</div><div class="pcr-v bull-t" id="putWallV">—</div><div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-top:2px">SUPPORT</div></div>
+  <div class="pcr-s"><div class="pcr-l">MAX PAIN</div><div class="pcr-v gold-t" id="maxPainV">—</div><div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-top:2px">MAGNET</div></div>
+</div>
+<div style="padding:0 12px 12px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+  <div><label class="inp-lbl">PCR VALUE</label><input class="inp" type="number" step="0.01" placeholder="e.g. 0.85" oninput="updatePCR(this.value)"></div>
+  <div><label class="inp-lbl">CALL WALL</label><input class="inp" type="number" placeholder="e.g. 24500" oninput="document.getElementById('callWallV').textContent=this.value||'—'"></div>
+  <div><label class="inp-lbl">PUT WALL</label><input class="inp" type="number" placeholder="e.g. 23800" oninput="document.getElementById('putWallV').textContent=this.value||'—'"></div>
+  <div><label class="inp-lbl">MAX PAIN</label><input class="inp" type="number" placeholder="e.g. 24100" oninput="document.getElementById('maxPainV').textContent=this.value||'—'"></div>
+</div>
+</div>
+<div class="sh mb"><h2>Hard Rules — Never Break</h2><div class="sl"></div></div>
+<div class="rules-box">
+<div class="rule-i"><div class="rule-n">1</div>Max 2 trades/day on S1–S4 · Max 1 on S5 Master Confluence</div>
+<div class="rule-i"><div class="rule-n">2</div>Daily loss ₹2,500 → screen off, done. No exceptions.</div>
+<div class="rule-i"><div class="rule-n">3</div>Stop loss placed BEFORE entry — never after</div>
+<div class="rule-i"><div class="rule-n">4</div>Never average a losing options position — ever</div>
+<div class="rule-i"><div class="rule-n">5</div>All positions closed by 3:15 PM — no exceptions</div>
+<div class="rule-i"><div class="rule-n">6</div>2 consecutive losses → stop for the day immediately</div>
+<div class="rule-i"><div class="rule-n">7</div>Max ₹2,500 total premium per trade (not per lot — total)</div>
+<div class="rule-i"><div class="rule-n">8</div>Only buy OTM options priced ₹30-85/unit for ₹50k capital</div>
+</div>
+</div></div>
+<div class="tab-content" id="t7"><div class="page">
+<div class="sh mb"><h2>Live News — 24/7 Auto-Fetch</h2><div class="sl"></div><span class="sh-note" id="newsAge">Refreshes every 10 min</span></div>
+<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(255,100,0,.15);color:#ff6400;font-family:var(--mono);font-weight:700">ET</span>
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(0,120,255,.12);color:#0078ff;font-family:var(--mono);font-weight:700">MC</span>
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(0,200,100,.12);color:#00c864;font-family:var(--mono);font-weight:700">MINT</span>
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(96,0,210,.15);color:#9b59b6;font-family:var(--mono);font-weight:700">YF</span>
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(220,50,50,.12);color:#dc3232;font-family:var(--mono);font-weight:700">NDTV</span>
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(30,100,200,.12);color:#1e64c8;font-family:var(--mono);font-weight:700">BS</span>
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(200,50,50,.12);color:#cc3232;font-family:var(--mono);font-weight:700">BL</span>
+  <span style="font-size:9px;padding:3px 7px;border-radius:3px;background:rgba(0,0,0,.6);color:#fff;font-family:var(--mono);font-weight:700;border:1px solid #333">BB</span>
+  <div style="margin-left:auto;display:flex;gap:5px;align-items:center">
+    <button class="nf-btn active" id="nf-ALL" onclick="filterNews('ALL',this)">ALL</button>
+    <button class="nf-btn" id="nf-HIGH" onclick="filterNews('HIGH',this)">🔴 HIGH</button>
+    <button class="nf-btn" id="nf-GEO" onclick="filterNews('GEO',this)">🌐 GEO</button>
+    <button class="nf-btn" id="nf-MACRO" onclick="filterNews('MACRO',this)">📊 MACRO</button>
+    <button class="nf-btn" id="nf-EARN" onclick="filterNews('EARN',this)">💰 EARN</button>
+    <span class="chip" id="newsFetchChip" style="background:rgba(255,140,0,.12);color:var(--warn)">FETCHING</span>
+    <button onclick="NEWS.fetch(true)" style="padding:4px 9px;border-radius:4px;font-size:9px;background:var(--acc);color:#fff;border:none;cursor:pointer;font-family:var(--mono)">↺</button>
+  </div>
+</div>
+<div class="card mb">
+  <div class="card-hdr"><span class="card-title">📡 Live RSS Feed — Auto Fetched</span><span style="font-size:9px;color:var(--muted);font-family:var(--mono)" id="newsCount"></span></div>
+  <div id="autoNewsBody"><div class="news-loading"><span class="spin"></span> Fetching from ET, Moneycontrol, LiveMint, Yahoo Finance, NDTV, BS, BusinessLine...</div></div>
+  <div class="news-ts" id="newsTs">Last updated: —</div>
+</div>
+<div class="card mb">
+  <div class="card-hdr"><span class="card-title">🔴 Breaking — Today's Headlines (May 12, 2026)</span><span class="chip chip-r">LIVE</span></div>
+  <div class="news-item" onclick="window.open('https://economictimes.indiatimes.com/markets','_blank')">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0"><span class="news-src" style="background:rgba(255,100,0,.15);color:#ff6400">ET</span><span style="font-size:11px;color:var(--bear)">▼</span></div>
+    <div class="news-content"><div class="news-hl">Nifty50 falls 3rd straight session — Banking, Auto, Energy lead decline<span class="news-impact imp-h">HIGH</span><span class="news-cat" style="background:rgba(108,71,255,.12);color:#8b6fff">INDEX</span></div><div class="news-meta">Economic Times · May 11, 2026 · -515pts in 3 sessions · 23,700 next support</div></div>
+  </div>
+  <div class="news-item" onclick="window.open('https://economictimes.indiatimes.com/markets/stocks','_blank')">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0"><span class="news-src" style="background:rgba(255,100,0,.15);color:#ff6400">ET</span><span style="font-size:11px;color:var(--bear)">▼</span></div>
+    <div class="news-content"><div class="news-hl">Goldman Sachs: Record $22B FII selloff 2026 may persist — 12 alpha stocks identified<span class="news-impact imp-h">HIGH</span><span class="news-cat" style="background:rgba(108,71,255,.15);color:#6c47ff">FLOWS</span></div><div class="news-meta">Economic Times · May 11, 2026</div></div>
+  </div>
+  <div class="news-item" onclick="window.open('https://www.ndtv.com/business','_blank')">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0"><span class="news-src" style="background:rgba(220,50,50,.12);color:#dc3232">NDTV</span><span style="font-size:11px;color:var(--bear)">▼</span></div>
+    <div class="news-content"><div class="news-hl">US-Iran War: Trump rejects Iran demands — Hormuz Strait risk remains<span class="news-impact imp-h">HIGH</span><span class="news-cat" style="background:rgba(255,50,50,.15);color:#ff3232">GEO</span></div><div class="news-desc">Iran demands war reparations + Hormuz sovereignty. Ceasefire talks stalled.</div><div class="news-meta">NDTV Business · May 12, 2026</div></div>
+  </div>
+  <div class="news-item" onclick="window.open('https://www.ndtv.com/business/market','_blank')">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0"><span class="news-src" style="background:rgba(220,50,50,.12);color:#dc3232">NDTV</span><span style="font-size:11px;color:var(--bear)">▼</span></div>
+    <div class="news-content"><div class="news-hl">BPCL, IOCL, HPCL drop 2%+ — Iran deploys submarines near Hormuz Strait<span class="news-impact imp-h">HIGH</span><span class="news-cat" style="background:rgba(255,200,66,.12);color:#ffc842">COMDTY</span></div><div class="news-meta">NDTV Business · May 11, 2026</div></div>
+  </div>
+  <div class="news-item" onclick="window.open('https://economictimes.indiatimes.com','_blank')">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0"><span class="news-src" style="background:rgba(255,100,0,.15);color:#ff6400">ET</span><span style="font-size:11px;color:var(--bull)">▲</span></div>
+    <div class="news-content"><div class="news-hl">Titan — GS alpha pick, 28/37 analysts BUY. HAL, BEL surge on defence demand<span class="news-impact imp-m">MED</span><span class="news-cat" style="background:rgba(0,232,122,.12);color:#00e87a">STOCK</span></div><div class="news-meta">Economic Times · May 11, 2026</div></div>
+  </div>
+  <div class="news-item" onclick="window.open('https://www.thehindubusinessline.com','_blank')">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0"><span class="news-src" style="background:rgba(200,50,50,.12);color:#cc3232">BL</span><span style="font-size:11px;color:var(--bear)">▼</span></div>
+    <div class="news-content"><div class="news-hl">HSBC: Twin shocks — energy crisis + deficient rainfall to hit India GDP<span class="news-impact imp-m">MED</span><span class="news-cat" style="background:rgba(255,165,0,.15);color:#ffa500">MACRO</span></div><div class="news-meta">The Hindu BusinessLine · May 11, 2026</div></div>
+  </div>
+  <div class="news-item" onclick="window.open('https://www.moneycontrol.com','_blank')">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0"><span class="news-src" style="background:rgba(0,120,255,.12);color:#0078ff">MC</span><span style="font-size:11px;color:var(--bull)">▲</span></div>
+    <div class="news-content"><div class="news-hl">Gold MCX ₹94,000+, Silver ₹93,000+ — Safe haven surge on US-Iran war fears<span class="news-impact imp-m">MED</span><span class="news-cat" style="background:rgba(255,200,66,.12);color:#ffc842">COMDTY</span></div><div class="news-meta">Moneycontrol · May 11, 2026</div></div>
+  </div>
+</div>
+<div class="card" style="padding:14px">
+  <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:10px">OPEN NEWS SOURCES DIRECTLY</div>
+  <div style="display:flex;flex-wrap:wrap;gap:0">
+    <a href="https://economictimes.indiatimes.com/markets" target="_blank" class="ql" style="background:rgba(255,100,0,.12);color:#ff6400">Economic Times</a>
+    <a href="https://www.moneycontrol.com/markets/" target="_blank" class="ql" style="background:rgba(0,120,255,.12);color:#0078ff">Moneycontrol</a>
+    <a href="https://www.livemint.com/market" target="_blank" class="ql" style="background:rgba(0,200,100,.12);color:#00c864">LiveMint</a>
+    <a href="https://finance.yahoo.com/quote/%5ENSEI/" target="_blank" class="ql" style="background:rgba(96,0,210,.15);color:#9b59b6">Yahoo Finance</a>
+    <a href="https://www.ndtv.com/business/market" target="_blank" class="ql" style="background:rgba(220,50,50,.12);color:#dc3232">NDTV Business</a>
+    <a href="https://www.business-standard.com/markets" target="_blank" class="ql" style="background:rgba(30,100,200,.12);color:#1e64c8">Business Standard</a>
+    <a href="https://www.thehindubusinessline.com/markets" target="_blank" class="ql" style="background:rgba(200,50,50,.12);color:#cc3232">Hindu BL</a>
+    <a href="https://www.bloomberg.com/asia" target="_blank" class="ql" style="background:rgba(20,20,20,.8);color:#fff;border:1px solid #333">Bloomberg Asia</a>
+    <a href="https://www.nseindia.com/option-chain" target="_blank" class="ql" style="background:rgba(108,71,255,.15);color:var(--acc)">NSE Option Chain</a>
+    <a href="https://www.nseindia.com/market-data/live-market-indices" target="_blank" class="ql" style="background:rgba(0,191,255,.12);color:var(--info)">NSE Live Indices</a>
+  </div>
+</div>
+</div></div>
+<div class="tab-content" id="t8"><div class="page">
+<div class="sh mb"><h2>5-Layer Confluence Signal Engine</h2><div class="sl"></div></div>
+<div class="conf-grid mb">
+  <div class="card"><div style="padding:14px" id="layerWrap"></div></div>
+  <div class="card"><div style="padding:16px">
+    <div class="score-row"><span class="s-lbl">BULL SCORE</span><span class="s-val bull-t" id="sBull">0<small style="font-size:11px;color:var(--muted)">/5</small></span></div>
+    <div class="score-row" style="border:none"><span class="s-lbl">BEAR SCORE</span><span class="s-val bear-t" id="sBear">0<small style="font-size:11px;color:var(--muted)">/5</small></span></div>
+    <div class="sig-badge sig-w" id="sigBadge">⏳ WAITING FOR SIGNAL</div>
+    <div style="margin-top:10px;font-size:9px;color:var(--muted);font-family:var(--mono);line-height:1.8">
+      4+/5 → MASTER SIGNAL · ₹10-12k<br>3/5 → HI-CONF · ₹5-6k<br>&lt;3 → NO TRADE
+    </div>
+    <div style="margin-top:10px;padding:9px;background:var(--bg3);border-radius:6px;font-size:9px;font-family:var(--mono);line-height:1.8;border:1px solid var(--border)">
+      <div style="color:var(--warn);margin-bottom:3px">LIVE DATA — May 8 EOD</div>
+      Nifty: <span class="bull-t">23,658 · 1hr BULL gate OPEN</span><br>
+      RSI: <span class="bull-t">60.2 (1hr) · 42.5 (daily)</span><br>
+      ADX: <span class="bull-t">31.84 · +DI 30.18 >> −DI 16.74</span><br>
+      BankNifty: <span class="warn-t">53,895 · RSI 55 · NO TREND (ADX 9.98)</span><br>
+      1hr HTF +DI: <span class="bull-t">30.18 (gate OPEN ✓)</span>
+    </div>
+  </div></div>
+</div>
+<div class="sh mb"><h2>v3 Improvements Over v2</h2><div class="sl"></div></div>
+<div class="g2 mb">
+  <div class="card" style="padding:14px">
+    <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:10px">FIXES APPLIED</div>
+    <div style="font-size:11px;line-height:1.9">
+      ✅ <code style="color:var(--acc)">indicator()</code> not strategy() → live ticks<br>
+      ✅ <code style="color:var(--acc)">calc_on_every_tick=true</code> → dashboard updates<br>
+      ✅ 60-min HTF +DI/-DI gate filter added<br>
+      ✅ MACD zero-cross detection (first bar only)<br>
+      ✅ +DI vs -DI direction check (not just ADX)<br>
+      ✅ Conflict guard prevents false master signals<br>
+      ✅ ATR scales to current timeframe auto<br>
+      ✅ VWAP retest entries for S4<br>
+      ✅ Gap fill exit warning for S3<br>
+      ✅ 26-row live dashboard with SL/TP preview
+    </div>
+  </div>
+  <div style="background:rgba(255,140,0,.04);border:1px solid rgba(255,140,0,.15);border-radius:10px;padding:14px">
+    <div style="font-size:10px;color:var(--warn);font-family:var(--mono);margin-bottom:10px">CAPITAL MATH — ₹50,000</div>
+    <div style="font-size:11px;line-height:1.9">
+      Max risk/trade = 1% = <strong class="bull-t">₹500</strong><br>
+      If SL = 20% of premium:<br>
+      Max premium = <strong class="bull-t">₹2,500</strong><br>
+      Nifty lot 75 units = <strong>₹33/unit max</strong><br>
+      BankNifty 30 units = <strong>₹83/unit max</strong><br>
+      <span class="warn-t">→ Only OTM in ₹30-85/unit range</span><br><br>
+      Weekly target:<br>
+      10 trades × 60% WR × 1:2.5 R:R<br>
+      = <strong class="bull-t">+₹5,500/week net</strong><br>
+      Monthly = <strong class="bull-t">~₹22,000 (+44%)</strong>
+    </div>
+  </div>
+</div>
+<div class="sh mb"><h2>TradingView Pine Script Setup</h2><div class="sl"></div></div>
+<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px">
+  <div class="g2">
+    <div style="font-size:11px;line-height:1.9">
+      <strong>1.</strong> Download <code style="color:var(--acc)">MEGA_QUANT_FINAL_v3.pine</code><br>
+      <strong>2.</strong> TradingView → Pine Editor → New → Paste → Add to chart<br>
+      <strong>3.</strong> Timeframe: <strong>15-min</strong> for Nifty/BankNifty<br>
+      <strong>4.</strong> Morning: Update L2 (PCR, Walls, Max Pain)<br>
+      <strong>5.</strong> Set 2 alerts: MASTER BUY + MASTER SELL<br>
+      <strong>6.</strong> HTF 60-min gate works automatically
+    </div>
+    <div style="font-size:11px;line-height:1.9">
+      <strong>Morning Routine (5 min):</strong><br>
+      8:45 AM → NSE option chain → PCR, Call/Put OI wall<br>
+      8:50 AM → Update Pine Script L2 inputs<br>
+      8:55 AM → Any NSE earnings today? → toggle L3<br>
+      9:00 AM → Open this dashboard<br>
+      9:15 AM → Market opens, watch OR formation<br>
+      9:30 AM → OR confirmed, check 5-layer score<br>
+      3:15 PM → Close ALL positions, no exceptions
+    </div>
+  </div>
+</div>
+</div></div>
+<div class="overlay" id="stockModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="m-hdr">
+      <div><div class="m-sym" id="m-sym">--</div><div style="font-size:9px;color:var(--muted);font-family:var(--mono);margin-top:2px" id="m-sec">--</div></div>
+      <button class="m-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="m-stats" id="m-stats"></div>
+    <div class="m-ana" id="m-ana"></div>
+  </div>
+</div>
+<div class="status-bar">MEGA QUANT v3 · <span>Nandan Kumar</span> · Module 1 Complete · Pine Script v3 + Live Dashboard · Data: <span>Groww MCP + Stooq + TradingView</span> · Educational use only</div>
+<script>
+'use strict';
+
+// CLOCK
+setInterval(()=>{
+  const ist=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+  const p=n=>String(n).padStart(2,'0');
+  document.getElementById('clock').textContent=p(ist.getHours())+':'+p(ist.getMinutes())+':'+p(ist.getSeconds())+' IST';
+  const h=ist.getHours(),m=ist.getMinutes(),wd=ist.getDay();
+  const open=wd>0&&wd<6&&((h===9&&m>=15)||(h>=10&&h<=14)||(h===15&&m<=30));
+  const b=document.getElementById('mktBadge');
+  b.textContent=open?'NSE OPEN':'NSE CLOSED';
+  b.className='mkt-b '+(open?'open':'closed');
+},1000);
+
+// TABS
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(id==='t7')NEWS.fetch(false);
+}
+
+// STOOQ LIVE DATA
+const PROXIES=[
+  url=>`https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  url=>`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+];
+const STOOQ='https://stooq.com/q/l/?f=sd2t2ohlcv&h&e=json&s=';
+
+const SECTORS={
+  'IT':['infy.ns','tcs.ns','wipro.ns','hcltech.ns','techm.ns','mphasis.ns','ltim.ns'],
+  'BANKING':['hdfcbank.ns','icicibank.ns','kotakbank.ns','axisbank.ns','sbin.ns','bankbaroda.ns','indusindbk.ns'],
+  'FINANCE':['bajfinance.ns','bajajfinsv.ns','cholafin.ns','muthootfin.ns'],
+  'AUTO':['maruti.ns','tatamotors.ns','m&m.ns','bajaj-auto.ns','heromotoco.ns','eichermot.ns'],
+  'PHARMA':['sunpharma.ns','drreddy.ns','cipla.ns','divislab.ns','lupin.ns'],
+  'ENERGY':['reliance.ns','ongc.ns','ntpc.ns','powergrid.ns','bpcl.ns','tatapower.ns'],
+  'METALS':['tatasteel.ns','hindalco.ns','jswsteel.ns','coalindia.ns','vedl.ns'],
+  'FMCG':['hindunilvr.ns','itc.ns','nestleind.ns','britannia.ns','dabur.ns'],
+  'INFRA':['lt.ns','adanient.ns','siemens.ns','abb.ns','bhel.ns','irctc.ns'],
+  'DEFENCE':['hal.ns','bel.ns','bdl.ns'],
+  'REALTY':['dlf.ns','godrejprop.ns','oberoirlty.ns','prestige.ns'],
+};
+
+const D={stocks:{},sectors:{},activeSector:null,prev:{}};
+const symToSec={};
+Object.entries(SECTORS).forEach(([sec,syms])=>syms.forEach(s=>symToSec[s]=sec));
+
+async function stooqFetch(syms,pIdx=0){
+  if(pIdx>=PROXIES.length)return[];
+  try{
+    const r=await fetch(PROXIES[pIdx](STOOQ+syms.join(',')),{signal:AbortSignal.timeout(8000)});
+    const d=await r.json();
+    return Array.isArray(d.symbols)?d.symbols:[];
+  }catch(e){return stooqFetch(syms,pIdx+1);}
+}
+
+function rfCalc(chg,volR,hlP){
+  const m=Math.min(Math.abs(chg)*9,42),v=Math.min(volR*10,30),e=Math.min(hlP*3.5,18);
+  return +((chg<0?-1:1)*(m+v+e+7)).toFixed(1);
+}
+function candlePat(o,h,l,c){
+  if(!o||!h||!l||!c)return'—';
+  const bd=Math.abs(c-o),tot=h-l;
+  if(!tot||!bd)return'Doji';
+  const bp=bd/tot,bull=c>=o;
+  const up=h-Math.max(o,c),dn=Math.min(o,c)-l;
+  if(bp<0.1)return'Doji';
+  if(bp>0.75)return bull?'Bull Mbz':'Bear Mbz';
+  if(bull&&dn>bd*1.5)return'Hammer';
+  if(!bull&&up>bd*1.5)return'Shoot★';
+  return bull?'Bull ●':'Bear ●';
+}
+const fmt=(n,d=2)=>typeof n==='number'?n.toFixed(d):'—';
+const fmtN=n=>n.toLocaleString('en-IN',{maximumFractionDigits:2});
+const fmtP=(n,d=2)=>(n>=0?'+':'')+n.toFixed(d)+'%';
+const clr=v=>v>=0?'var(--bull)':'var(--bear)';
+
+async function fetchIdxAndStocks(){
+  // Indices
+  const idxData=await stooqFetch(['^nsei','^nsebank','^bsesn','^cnxfin']);
+  const idxMap={'^nsei':'n','^nsebank':'b','^bsesn':'s','^cnxfin':'f'};
+  idxData.forEach(item=>{
+    const sym=(item.Symbol||'').toLowerCase();
+    const ltp=parseFloat(item.Close)||0;
+    if(!ltp)return;
+    const chg=parseFloat(item['% Change']||0)||0;
+    const key=idxMap[sym];
+    if(!key)return;
+    const prEl=document.getElementById('iv-'+key);
+    const chEl=document.getElementById('ic-'+key);
+    if(prEl&&D.prev['i'+key]!==ltp){
+      prEl.classList.remove('fg','fr');void prEl.offsetWidth;
+      prEl.classList.add(ltp>(D.prev['i'+key]||0)?'fg':'fr');
+      D.prev['i'+key]=ltp;
+      prEl.textContent=fmtN(ltp);prEl.style.color=clr(chg);
+    }
+    if(chEl){chEl.textContent=fmtP(chg,2);chEl.className='idx-ch '+(chg>=0?'bch':'rch');}
+    const card=prEl?.closest('.idx-card');
+    if(card)card.className='idx-card '+(chg>=0?'bull':'bear');
+  });
+
+  // Stocks in chunks
+  const all=[...new Set(Object.values(SECTORS).flat())];
+  const chunks=[];
+  for(let i=0;i<all.length;i+=10)chunks.push(all.slice(i,i+10));
+  for(const ch of chunks){
+    const items=await stooqFetch(ch);
+    items.forEach(item=>{
+      const sym=(item.Symbol||'').toLowerCase();
+      const ltp=parseFloat(item.Close)||0;
+      if(!ltp)return;
+      const op=parseFloat(item.Open)||ltp;
+      const hi=parseFloat(item.High)||ltp;
+      const lo=parseFloat(item.Low)||ltp;
+      const vol=parseFloat(item.Volume)||0;
+      const chg=parseFloat(item['% Change']||0)||((ltp-op)/Math.max(op,1)*100);
+      const hlP=lo>0?((hi-lo)/lo*100):0;
+      const volR=vol>0?(vol/500000):1;
+      D.stocks[sym]={sym,ltp,op,hi,lo,vol,chg,hlP,volR,
+        rf:rfCalc(chg,volR,hlP),bias:chg>0.3?'BULL':chg<-0.3?'BEAR':'NEU',candle:candlePat(op,hi,lo,ltp)};
+    });
+    await new Promise(r=>setTimeout(r,250));
+  }
+  computeSectors();renderMovers();renderSectorFlow();renderRF();
+  document.getElementById('updStamp').textContent='Updated '+new Date().toLocaleTimeString('en-IN');
+}
+
+function computeSectors(){
+  D.sectors={};
+  Object.entries(SECTORS).forEach(([sec,syms])=>{
+    const stocks=syms.map(s=>D.stocks[s]).filter(Boolean);
+    if(!stocks.length)return;
+    const avgChg=stocks.reduce((a,s)=>a+s.chg,0)/stocks.length;
+    const flow=stocks.reduce((a,s)=>a+(s.ltp*s.vol*s.chg/100),0)/1e7;
+    const maxRF=Math.max(...stocks.map(s=>Math.abs(s.rf)));
+    D.sectors[sec]={avgChg,flow:+flow.toFixed(1),maxRF,stocks:[...stocks].sort((a,b)=>Math.abs(b.rf)-Math.abs(a.rf))};
+  });
+}
+
+const mRow=s=>`<div style="display:grid;grid-template-columns:1.4fr .9fr .7fr .8fr;gap:8px;padding:8px 12px;border-top:1px solid rgba(26,26,56,.4);cursor:pointer;transition:.15s"
+  onmouseover="this.style.background='rgba(108,71,255,.04)'" onmouseout="this.style.background=''"
+  onclick='openModal(${JSON.stringify(s)})'>
+  <span style="font-size:11px;font-weight:700;font-family:var(--mono)">${s.sym.replace('.ns','').toUpperCase()}</span>
+  <span style="font-family:var(--mono);font-size:11px;text-align:right">₹${s.ltp.toFixed(0)}</span>
+  <span style="font-family:var(--mono);font-size:11px;font-weight:700;text-align:right;color:${clr(s.chg)}">${fmtP(s.chg,2)}</span>
+  <span style="font-family:var(--mono);font-size:11px;font-weight:700;text-align:right;color:${Math.abs(s.rf)>20?'var(--gold)':'var(--muted)'}">${fmt(s.rf,1)}</span>
+</div>`;
+
+function renderMovers(){
+  const all=Object.values(D.stocks);
+  if(!all.length)return;
+  const sorted=[...all].sort((a,b)=>b.chg-a.chg);
+  const empty='<div style="padding:14px;text-align:center;color:var(--muted);font-size:11px">Market closed</div>';
+  const g=document.getElementById('gainersBody'),l=document.getElementById('losersBody');
+  if(g)g.innerHTML=sorted.slice(0,12).length?sorted.slice(0,12).map(mRow).join(''):empty;
+  if(l)l.innerHTML=sorted.slice(-12).reverse().length?sorted.slice(-12).reverse().map(mRow).join(''):empty;
+}
+
+function renderSectorFlow(){
+  const el=document.getElementById('sectorFlowList');
+  if(!el)return;
+  const sorted=Object.entries(D.sectors).sort((a,b)=>b[1].flow-a[1].flow);
+  if(!sorted.length){el.innerHTML='<div style="padding:14px;text-align:center;color:var(--muted);font-size:11px">Market closed</div>';return;}
+  const maxF=Math.max(...sorted.map(s=>Math.abs(s[1].flow)),1);
+  el.innerHTML=sorted.map(([name,d])=>{
+    const bull=d.avgChg>=0,bPct=Math.min(Math.abs(d.flow)/maxF*100,100);
+    return `<div class="sf-row${D.activeSector===name?' sel':''}" onclick="selectSector('${name}')">
+      <span style="font-size:12px;font-weight:600">${name}</span>
+      <div class="sf-bar-bg"><div class="sf-bar-fill" style="width:${bPct}%;background:${bull?'var(--bull)':'var(--bear)'}"></div></div>
+      <span style="font-size:11px;font-weight:700;font-family:var(--mono);text-align:right;color:${clr(d.avgChg)}">${fmtP(d.avgChg,2)}</span>
+      <span style="font-size:10px;font-family:var(--mono);text-align:right;color:${d.flow>=0?'var(--bull)':'var(--bear)'}">${d.flow>=0?'+':''}${d.flow}</span>
+      <span style="font-size:11px;font-weight:700;font-family:var(--mono);text-align:right;color:var(--gold)">${d.maxRF.toFixed(0)}</span>
+    </div>`;
+  }).join('');
+}
+
+function selectSector(name){
+  D.activeSector=name;
+  const el=document.getElementById('selSec');
+  if(el)el.textContent=name+' — LIVE STOCKS';
+  renderSectorFlow();
+  const d=D.sectors[name];
+  const sl=document.getElementById('stockList');
+  if(!sl||!d)return;
+  sl.innerHTML=d.stocks.map(s=>{
+    const sym=s.sym.replace('.ns','').toUpperCase();
+    const rfC=Math.abs(s.rf)>40?'var(--gold)':s.rf>0?'var(--bull)':'var(--bear)';
+    return `<div class="sp-row" onclick='openModal(${JSON.stringify(s)})'>
+      <div><div style="font-size:12px;font-weight:700;font-family:var(--mono)">${sym}</div></div>
+      <span class="nr">₹${fmtN(s.ltp)}</span>
+      <span class="nr" style="color:${clr(s.chg)};font-weight:700">${fmtP(s.chg,2)}</span>
+      <span class="nr" style="color:${s.volR>2?'var(--gold)':'var(--muted)'}">${s.volR.toFixed(1)}×</span>
+      <span style="font-size:9px;color:var(--muted)">${s.candle}</span>
+      <div style="text-align:right"><div class="nr" style="color:${rfC};font-weight:700">${fmt(s.rf,1)}</div>
+        <span class="${s.bias==='BULL'?'bb':s.bias==='BEAR'?'bs':'bn'}">${s.bias}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderRF(){
+  const all=Object.values(D.stocks);
+  const sorted=[...all].sort((a,b)=>Math.abs(b.rf)-Math.abs(a.rf));
+  const maxRF=Math.max(...sorted.map(s=>Math.abs(s.rf)),1);
+  const rfRow=(s,showVol)=>{
+    const sym=s.sym.replace('.ns','').toUpperCase();
+    const bPct=Math.min(Math.abs(s.rf)/maxRF*100,100),bCol=s.rf>0?'var(--bull)':'var(--bear)';
+    return `<div class="rf-row" onclick='openModal(${JSON.stringify(s)})'>
+      <span style="font-size:11px;font-weight:700;font-family:var(--mono)">${sym}</span>
+      <span style="font-size:9px;color:var(--muted)">${symToSec[s.sym]||'—'}</span>
+      <span class="nr" style="color:${clr(s.chg)};font-weight:700">${fmtP(s.chg,1)}</span>
+      <div class="rf-bar-w"><div class="rf-bar" style="width:${bPct}%;background:${bCol}"></div>
+        <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:${bCol}">${fmt(s.rf,1)}</span></div>
+      <span style="font-size:10px;font-family:var(--mono);color:${showVol?(s.volR>2?'var(--gold)':'var(--muted)'):(s.rf>0?'var(--bull)':'var(--bear)')}">
+        ${showVol?s.volR.toFixed(1)+'×':(s.rf>0?'BULL':'BEAR')}</span>
+    </div>`;
+  };
+  const highR=sorted.filter(s=>Math.abs(s.rf)>15).slice(0,14);
+  const boost=sorted.filter(s=>s.volR>1.5&&Math.abs(s.chg)>0.8).slice(0,12);
+  const empty='<div style="padding:14px;text-align:center;color:var(--muted);font-size:11px">Market closed</div>';
+  const h=document.getElementById('highRBody'),b=document.getElementById('boostBody');
+  if(h)h.innerHTML=highR.length?highR.map(s=>rfRow(s,false)).join(''):empty;
+  if(b)b.innerHTML=boost.length?boost.map(s=>rfRow(s,true)).join(''):empty;
+}
+
+// 24/7 NEWS ENGINE
+const NEWS=(()=>{
+  const SOURCES=[
+    {n:'Economic Times',s:'ET',  url:'https://economictimes.indiatimes.com/markets/rss.cms',        c:'rgba(255,100,0,.15)',tc:'#ff6400'},
+    {n:'ET Markets',   s:'ET',  url:'https://economictimes.indiatimes.com/markets/stocks/rss.cms',  c:'rgba(255,100,0,.15)',tc:'#ff6400'},
+    {n:'Moneycontrol', s:'MC',  url:'https://www.moneycontrol.com/rss/MCtopnews.xml',               c:'rgba(0,120,255,.12)',tc:'#0078ff'},
+    {n:'MC Markets',   s:'MC',  url:'https://www.moneycontrol.com/rss/marketreports.xml',           c:'rgba(0,120,255,.12)',tc:'#0078ff'},
+    {n:'LiveMint',     s:'MINT',url:'https://www.livemint.com/rss/markets',                         c:'rgba(0,200,100,.12)',tc:'#00c864'},
+    {n:'LiveMint Money',s:'MINT',url:'https://www.livemint.com/rss/money',                          c:'rgba(0,200,100,.12)',tc:'#00c864'},
+    {n:'Yahoo Finance',s:'YF', url:'https://feeds.finance.yahoo.com/rss/2.0/headline?s=%5ENSEI&region=IN&lang=en-IN',c:'rgba(96,0,210,.15)',tc:'#9b59b6'},
+    {n:'NDTV Business',s:'NDTV',url:'https://feeds.feedburner.com/NdtvProfit-Business',             c:'rgba(220,50,50,.12)',tc:'#dc3232'},
+    {n:'Business Std', s:'BS', url:'https://www.business-standard.com/rss/markets-106.rss',         c:'rgba(30,100,200,.12)',tc:'#1e64c8'},
+    {n:'Hindu BL',     s:'BL', url:'https://www.thehindubusinessline.com/markets/?service=rss',     c:'rgba(200,50,50,.12)',tc:'#cc3232'},
+  ];
+  const H=['war','attack','ceasefire','rbi rate','fed rate','rate hike','rate cut','fii selloff','fii outflow','default','crisis','crash','circuit','pakistan','iran','ukraine','russia','trade war','tariff','gdp','inflation','cpi'];
+  const M=['nifty','sensex','banknifty','earnings','result','quarter','profit','revenue','ipo','merger','buyback','dividend','block deal','fii','dii','rbi','sebi','gold','crude','oil','rupee','usd','breakout','upgrade','downgrade'];
+  const BULL=['rally','surge','gain','bullish','buy','upgrade','beats','profit up','record high','positive','growth','strong'];
+  const BEAR=['fall','drop','decline','bearish','sell','downgrade','misses','loss','record low','negative','weak','recession'];
+  const CATS={
+    GEO:['war','attack','geopolitical','pakistan','iran','russia','china','ceasefire','border','conflict'],
+    MACRO:['rbi','fed','rate','inflation','cpi','gdp','budget','fiscal','monetary','policy'],
+    FLOWS:['fii','dii','flow','inflow','outflow','foreign','institutional'],
+    EARN:['result','earnings','quarter','profit','revenue','q1','q2','q3','q4'],
+    COMDTY:['gold','crude','oil','silver','metal','commodity','brent','mcx'],
+    IPO:['ipo','listing','grey market','gmp'],
+    INDEX:['nifty','sensex','banknifty','index'],
+    STOCK:['stock','shares','equity','bse','nse'],
+  };
+  const CCOLORS={GEO:{bg:'rgba(255,50,50,.15)',tc:'#ff3232'},MACRO:{bg:'rgba(255,165,0,.15)',tc:'#ffa500'},FLOWS:{bg:'rgba(108,71,255,.15)',tc:'#6c47ff'},EARN:{bg:'rgba(0,232,122,.12)',tc:'#00e87a'},COMDTY:{bg:'rgba(255,200,66,.12)',tc:'#ffc842'},IPO:{bg:'rgba(0,191,255,.12)',tc:'#00bfff'},INDEX:{bg:'rgba(108,71,255,.12)',tc:'#8b6fff'},STOCK:{bg:'rgba(60,120,200,.12)',tc:'#3c78c8'}};
+  let cache=[],lastFetch=0,activeFilter='ALL';
+  const REFRESH=10*60*1000;
+
+  function impact(t,d=''){
+    const txt=(t+' '+d).toLowerCase();
+    if(H.some(k=>txt.includes(k)))return{cls:'imp-h',label:'HIGH'};
+    if(M.some(k=>txt.includes(k)))return{cls:'imp-m',label:'MED'};
+    return{cls:'imp-l',label:'LOW'};
+  }
+  function sentiment(t){
+    const txt=t.toLowerCase();
+    const b=BULL.filter(k=>txt.includes(k)).length,s=BEAR.filter(k=>txt.includes(k)).length;
+    return b>s?{c:'var(--bull)',sym:'▲'}:s>b?{c:'var(--bear)',sym:'▼'}:{c:'var(--muted)',sym:'●'};
+  }
+  function category(t){
+    const txt=t.toLowerCase();
+    for(const[cat,kws]of Object.entries(CATS)){
+      if(kws.some(k=>txt.includes(k)))return{cat,...(CCOLORS[cat]||{bg:'rgba(60,60,100,.12)',tc:'#8888aa'})};
+    }
+    return{cat:'MARKET',bg:'rgba(60,60,100,.12)',tc:'#8888aa'};
+  }
+
+  async function fetchSrc(src,pIdx=0){
+    if(pIdx>=PROXIES.length)return[];
+    try{
+      const r=await fetch(PROXIES[pIdx](src.url),{signal:AbortSignal.timeout(7000)});
+      const txt=await r.text();
+      const xml=new DOMParser().parseFromString(txt,'text/xml');
+      const results=[];
+      xml.querySelectorAll('item').forEach((item,i)=>{
+        if(i>12)return;
+        const title=(item.querySelector('title')?.textContent||'').trim();
+        const link=(item.querySelector('link')?.textContent||'').trim()||'#';
+        const date=item.querySelector('pubDate')?.textContent||'';
+        const desc=(item.querySelector('description')?.textContent||'').replace(/<[^>]+>/g,'').trim();
+        if(!title||title.length<10)return;
+        const d=new Date(date);
+        const ageMs=Date.now()-d.getTime(),ageH=ageMs/3600000;
+        if(!isNaN(d)&&ageH>48)return;
+        const timeStr=isNaN(d)?'Recent':ageH<1?Math.round(ageMs/60000)+'m ago':ageH<24?Math.round(ageH)+'h ago':d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+        results.push({title:title.substring(0,140),link,timeStr,date:isNaN(d)?0:d.getTime(),src:src.n,short:src.s,c:src.c,tc:src.tc,desc:desc.substring(0,140),imp:impact(title,desc),sent:sentiment(title),cat:category(title)});
+      });
+      return results;
+    }catch(e){if(pIdx+1<PROXIES.length)return fetchSrc(src,pIdx+1);return[];}
+  }
+
+  async function fetchAll(){
+    const results=[];
+    const fetches=await Promise.allSettled(SOURCES.map(s=>fetchSrc(s)));
+    fetches.forEach(r=>{if(r.status==='fulfilled')results.push(...r.value);});
+    const seen=new Set();
+    const unique=results.filter(item=>{
+      const key=item.title.substring(0,35).toLowerCase().replace(/\s+/g,'');
+      if(seen.has(key))return false;seen.add(key);return true;
+    });
+    unique.sort((a,b)=>{const s={'HIGH':3,'MED':2,'LOW':1};const ia=s[a.imp.label]||1,ib=s[b.imp.label]||1;if(ia!==ib)return ib-ia;return(b.date||0)-(a.date||0);});
+    return unique;
+  }
+
+  function renderItem(item){
+    return `<div class="news-item" onclick="window.open('${item.link}','_blank')">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
+        <span class="news-src" style="background:${item.c};color:${item.tc}">${item.short}</span>
+        <span style="font-size:11px;color:${item.sent.c}">${item.sent.sym}</span>
+      </div>
+      <div class="news-content">
+        <div class="news-hl">${item.title}<span class="news-impact ${item.imp.cls}">${item.imp.label}</span><span class="news-cat" style="background:${item.cat.bg};color:${item.cat.tc}">${item.cat.cat}</span></div>
+        ${item.desc?`<div class="news-desc">${item.desc.substring(0,100)}...</div>`:''}
+        <div class="news-meta">${item.src} · ${item.timeStr}</div>
+      </div>
+    </div>`;
+  }
+
+  function render(){
+    const el=document.getElementById('autoNewsBody');
+    if(!el)return;
+    let items=activeFilter==='ALL'?cache:activeFilter==='HIGH'?cache.filter(i=>i.imp.label==='HIGH'):cache.filter(i=>i.cat.cat===activeFilter);
+    const cEl=document.getElementById('newsCount');
+    if(cEl)cEl.textContent=items.length+' articles';
+    el.innerHTML=items.length?items.map(renderItem).join(''):'<div class="news-loading">No articles match. Try ALL or refresh.</div>';
+  }
+
+  async function fetchAndRender(force=false){
+    const now=Date.now();
+    if(!force&&(now-lastFetch)<REFRESH&&cache.length)return;
+    const chip=document.getElementById('newsFetchChip');
+    if(chip){chip.textContent='FETCHING';chip.style.background='rgba(255,140,0,.12)';chip.style.color='var(--warn)';}
+    const items=await fetchAll();
+    if(items.length){
+      cache=items;lastFetch=now;render();
+      if(chip){chip.textContent='LIVE ●';chip.style.background='rgba(0,232,122,.12)';chip.style.color='var(--bull)';}
+      const ts=document.getElementById('newsTs');if(ts)ts.textContent='Updated: '+new Date().toLocaleTimeString('en-IN')+' · '+cache.length+' articles';
+      const ag=document.getElementById('newsAge');if(ag)ag.textContent='Updated: '+new Date().toLocaleTimeString('en-IN');
+    }else{
+      if(chip){chip.textContent='MANUAL';chip.style.background='rgba(108,71,255,.12)';chip.style.color='var(--acc)';}
+      const el=document.getElementById('autoNewsBody');
+      if(el)el.innerHTML='<div class="news-loading">RSS blocked by browser/network CORS. Use direct links below.</div>';
+    }
+  }
+  setInterval(()=>fetchAndRender(true),REFRESH);
+  return{fetch:fetchAndRender,setFilter:(f)=>{activeFilter=f;render();}};
+})();
+
+function filterNews(f,btn){
+  document.querySelectorAll('.nf-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  NEWS.setFilter(f);
+}
+
+// CONFLUENCE
+const LAYERS=[
+  {id:'l1',name:'L1 — OR Sniper',  desc:'Opening Range · 9:15-9:30 · Vol ×1.3'},
+  {id:'l2',name:'L2 — OI / PCR',   desc:'PCR from NSE option chain · Update daily'},
+  {id:'l3',name:'L3 — Catalyst',   desc:'Earnings / Gap >1.5% · NSE announcements'},
+  {id:'l4',name:'L4 — VWAP Cross', desc:'VWAP + Volume + EMA slope confirmation'},
+  {id:'l5',name:'L5 — Quant HTF',  desc:'SuperTrend+MACD+ADX+60min gate (v3)'},
+];
+(()=>{
+  const el=document.getElementById('layerWrap');
+  if(!el)return;
+  el.innerHTML=LAYERS.map(l=>`<div class="l-item"><div class="l-left">
+    <div class="l-num">${l.id[1]}</div>
+    <div><div class="l-nm">${l.name}</div><div class="l-ds">${l.desc}</div></div>
+  </div>
+  <select class="l-sel" id="${l.id}" onchange="updateSig()">
+    <option value="w">⏳ Wait</option><option value="b">✓ BULL</option><option value="s">✓ BEAR</option>
+  </select></div>`).join('');
+})();
+
+function updateSig(){
+  let b=0,s=0;
+  LAYERS.forEach(l=>{const v=document.getElementById(l.id)?.value||'w';if(v==='b')b++;else if(v==='s')s++;});
+  const bEl=document.getElementById('sBull'),sEl=document.getElementById('sBear');
+  if(bEl)bEl.innerHTML=b+'<small style="font-size:11px;color:var(--muted)">/5</small>';
+  if(sEl)sEl.innerHTML=s+'<small style="font-size:11px;color:var(--muted)">/5</small>';
+  const badge=document.getElementById('sigBadge');if(!badge)return;
+  if(b>=4){badge.className='sig-badge sig-b';badge.textContent='🔥 MASTER BUY '+b+'/5';}
+  else if(s>=4){badge.className='sig-badge sig-s';badge.textContent='🔥 MASTER SELL '+s+'/5';}
+  else if(b===3){badge.className='sig-badge';badge.style.cssText='background:rgba(0,232,122,.08);color:var(--bull);border:1px solid rgba(0,232,122,.2);padding:12px;border-radius:7px;text-align:center;font-family:var(--mono);font-size:12px;font-weight:700;margin-top:12px';badge.textContent='🟢 HI-CONF BUY 3/5';}
+  else if(s===3){badge.className='sig-badge';badge.style.cssText='background:rgba(255,34,68,.08);color:var(--bear);border:1px solid rgba(255,34,68,.2);padding:12px;border-radius:7px;text-align:center;font-family:var(--mono);font-size:12px;font-weight:700;margin-top:12px';badge.textContent='🔴 HI-CONF SELL 3/5';}
+  else{badge.className='sig-badge sig-w';badge.style='';badge.textContent='⏳ WAITING ('+b+'B/'+s+'S)';}
+}
+
+function updatePCR(v){
+  const n=parseFloat(v)||0;
+  const el=document.getElementById('pcrVal'),sig=document.getElementById('pcrSig');
+  if(!el)return;
+  el.textContent=n?n.toFixed(2):'—';
+  if(n>=1.2){el.style.color='var(--bull)';if(sig){sig.textContent='✓ BULLISH';sig.style.color='var(--bull)';}}
+  else if(n>0&&n<=0.8){el.style.color='var(--bear)';if(sig){sig.textContent='✗ BEARISH';sig.style.color='var(--bear)';}}
+  else{el.style.color='var(--gold)';if(sig){sig.textContent='◌ NEUTRAL';sig.style.color='var(--gold)';}}
+}
+
+// MODAL
+function openModal(stock){
+  const sym=stock.sym.replace('.ns','').toUpperCase();
+  document.getElementById('m-sym').textContent=sym;
+  document.getElementById('m-sec').textContent=(symToSec[stock.sym]||'INDEX')+' · '+stock.candle+' · '+stock.bias;
+  const rf=stock.rf||0;
+  document.getElementById('m-stats').innerHTML=[
+    ['LTP','₹'+fmtN(stock.ltp),''],
+    ['Change',fmtP(stock.chg,2),stock.chg>=0?'var(--bull)':'var(--bear)'],
+    ['High','₹'+fmtN(stock.hi),''],['Low','₹'+fmtN(stock.lo),''],
+    ['Volume',stock.vol>1e5?(stock.vol/1e5).toFixed(1)+'L':String(stock.vol),''],
+    ['R-Factor',fmt(rf,2),Math.abs(rf)>30?'var(--gold)':rf>0?'var(--bull)':'var(--bear)'],
+  ].map(([l,v,c])=>`<div class="m-st"><div class="m-sl">${l}</div><div class="m-sv" style="color:${c||'var(--text)'}">${v}</div></div>`).join('');
+  const str=Math.abs(rf)>50?'Very Strong':Math.abs(rf)>30?'Strong':Math.abs(rf)>15?'Moderate':'Weak';
+  document.getElementById('m-ana').innerHTML=`<div style="font-size:9px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;margin-bottom:7px">QUANT ANALYSIS</div>
+    <strong>${sym}</strong> bias: <strong style="color:${stock.chg>=0?'var(--bull)':'var(--bear)'}">${stock.bias}</strong> · <strong style="color:var(--gold)">${str} R-Factor ${fmt(rf,1)}</strong><br><br>
+    Volume: <strong>${stock.volR.toFixed(1)}×</strong> avg — ${stock.volR>2.5?'🔥 Institutional flow':stock.volR>1.5?'📈 Above avg':'Normal'}<br>
+    H/L range: ${fmt(stock.hlP,2)}% · Pattern: <strong>${stock.candle}</strong><br><br>
+    <strong>Verdict:</strong> ${Math.abs(rf)>40?'✅ High conviction. Check confluence.':Math.abs(rf)>20?'🟡 Moderate. Confirm HTF direction.':'⏳ Low R-Factor. Wait for clearer setup.'}`;
+  document.getElementById('stockModal').classList.add('show');
+}
+function closeModal(){document.getElementById('stockModal').classList.remove('show');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+// INIT
+setTimeout(fetchIdxAndStocks,600);
+setInterval(fetchIdxAndStocks,5000);
+setTimeout(()=>NEWS.fetch(true),1500);
+</script>
+</body>
+</html>
